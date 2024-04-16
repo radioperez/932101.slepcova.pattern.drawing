@@ -50,6 +50,7 @@ class Canvas_widget(QWidget):
         self.last_pos = None
         self.painter = QPainter()
         self.pen = QPen(QColor("black"),1)
+        self.eraser = QPen(QColor("white"),1)
     def paintEvent(self, e):
         with QPainter(self) as painter:
             painter.drawPixmap(0,0,self.canvas.state)
@@ -61,7 +62,10 @@ class Canvas_widget(QWidget):
         QWidget.mousePressEvent(self, e)
     def mouseMoveEvent(self, e):
         self.painter.begin(self.canvas.state)
-        self.painter.setPen(self.pen)
+        if e.buttons() == Qt.MouseButton.RightButton:
+            self.painter.setPen(self.eraser)
+        elif e.buttons() == Qt.MouseButton.LeftButton:
+            self.painter.setPen(self.pen)
         self.painter.drawLine(self.last_pos, e.pos())
         self.painter.end()
 
@@ -118,10 +122,12 @@ class MainWindow(QMainWindow):
     def inc_size(self):
         self.pen_size = abs(self.pen_size + 1) % 100
         self.canvas_widget.pen.setWidth(self.pen_size)
+        self.canvas_widget.eraser.setWidth(self.pen_size)
         self.show_size.setText("Size "+str(self.pen_size)) 
     def dec_size(self):
         self.pen_size = abs(self.pen_size - 1) % 100
         self.canvas_widget.pen.setWidth(self.pen_size)
+        self.canvas_widget.eraser.setWidth(self.pen_size)
         self.show_size.setText("Size "+str(self.pen_size)) 
 
 app = QApplication(sys.argv)

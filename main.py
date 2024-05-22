@@ -174,9 +174,12 @@ class MainWindow(QMainWindow):
             self.canvas_widget.update()
     
     def set_canvas(self, canvas: Canvas_widget):
+        self.canvas_widget.hide()
+        canvas.hide()
         self.layout.replaceWidget(self.canvas_widget, canvas)
         self.canvas_widget = canvas
         self.layout.replaceWidget(canvas, self.canvas_widget)
+        self.canvas_widget.show()
     
     def set_color(self):
         color = QColorDialog.getColor(self.color, self)

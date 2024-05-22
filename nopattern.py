@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
 
         save_canvas.triggered.connect(self.save)
         add_canvas.triggered.connect(self.new_canvas)
-        layout = QHBoxLayout()
+        self.layout = QHBoxLayout()
 
         self.canvas_list = QFormLayout()
         self.canvas_widget = None
@@ -108,10 +108,10 @@ class MainWindow(QMainWindow):
         inc_size.triggered.connect(self.inc_size)
         dec_size.triggered.connect(self.dec_size)
 
-        layout.addWidget(self.canvas_widget)
-        layout.addLayout(self.canvas_list)
+        self.layout.addWidget(self.canvas_widget)
+        self.layout.addLayout(self.canvas_list)
         root = QWidget()
-        root.setLayout(layout)
+        root.setLayout(self.layout)
         self.setCentralWidget(root)
     def new_canvas(self):
         self.index += 1
@@ -134,13 +134,14 @@ class MainWindow(QMainWindow):
         copy = self.canvas_widget
         self.canvases[self.canvas_widget.idx] = copy
     def get_canvas(self, idx):
-        print(f'Previous canvas: {self.canvas_widget}, Replaced with: {self.canvases[idx]}')
-        self.canvas_widget = self.canvases[idx]
-        self.canvas_widget.update()
-        self.update()
-        print(self.canvas_widget == self.canvases[idx])
-    def ping(self):
-        print("PING")
+        canvas = self.canvases[idx]
+        self.canvas_widget.hide()
+        canvas.hide()
+
+        self.layout.replaceWidget(self.canvas_widget, canvas)
+        self.canvas_widget = canvas
+        self.layout.replaceWidget(canvas, self.canvas_widget)
+        self.canvas_widget.show()
     def set_color(self):
         color = QColorDialog.getColor(self.color, self)
         if color:

@@ -100,7 +100,7 @@ class Database:
         self.items[object.idx] = object
         return self.items[object.idx]
     def delete(self, object) -> Canvas_widget:
-        return self.items.pop(object.idx)
+        if self.items: return self.items.pop(object.idx)
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
